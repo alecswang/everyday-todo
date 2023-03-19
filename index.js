@@ -1,7 +1,3 @@
-
-        // document.getElementById("today").innerHTML = Date.getDay();
-        // document.write("getDay() : " + dt.getDay() ); 
-
 		let tasks = [];
 
 		// check if tasks are stored in local storage
@@ -120,7 +116,9 @@
         let today = month + "/" + day;
         let oneDayAgo = month + "/" + (day-1);
         let twoDayAgo = month + "/" + (day-2);
-        document.getElementById("today").innerHTML = convertDay(pstDate.getDay()) + "</br>" + today;
-        document.getElementById("oneDayAgo").innerHTML = convertDay(pstDate.getDay() - 1) + "</br>" + oneDayAgo;
-        document.getElementById("twoDayAgo").innerHTML = convertDay(pstDate.getDay() - 2) + "</br>" + twoDayAgo;
+		let weekDay = pstDate.getDay();
+        document.getElementById("today").innerHTML = convertDay(weekDay) + "</br>" + today;
+		if(weekDay <= 1){weekDay += 7;}
+        document.getElementById("oneDayAgo").innerHTML = convertDay(weekDay - 1) + "</br>" + oneDayAgo;
+        document.getElementById("twoDayAgo").innerHTML = convertDay(weekDay - 2) + "</br>" + twoDayAgo;
 
