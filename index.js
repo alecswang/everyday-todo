@@ -159,9 +159,11 @@ document.addEventListener("click", function (event) {
 // convert number into string for week days
 function convertDay(num) {
   switch (num) {
-    case (0, 7):
+    case 0:
+    case 7:
       return "Sunday";
-    case (1, 8):
+    case 1:
+    case 8:
       return "Monday";
     case 2:
       return "Tuesday";
@@ -183,6 +185,9 @@ let weekDay = pstDate.getDay();
 if (weekDay <= 1) {
   weekDay += 7;
 }
+console.log(weekDay-1)
+console.log(convertDay(weekDay-1))
+console.log(convertDay(1))
 document.getElementById("zeroDayAgo").innerHTML =
   convertDay(weekDay) + "</br>" + closestThreeDays[0].slice(5);
 document.getElementById("oneDayAgo").innerHTML =
@@ -207,6 +212,7 @@ localStorage.setItem("dayData", JSON.stringify(dayData));
 
 // if new day
 function newDay() {
+  closestThreeDays = getClosestThreeDays();
   // for every event
   for (let i = 0; i < tasks.length; ++i) {
     // for the tasks in every event
