@@ -63,17 +63,20 @@ document
   .addEventListener("submit", function (event) {
     event.preventDefault();
     let taskInput = document.querySelector("#task-input");
+    let colorInput = document.querySelector("#color-input");
+	let color = colorInput.value;
     let task = taskInput.value.trim();
     if (task) {
       let newTask = {
         task: task,
+        color: color,
         [closestThreeDays[0]]: false,
         [closestThreeDays[1]]: false,
         [closestThreeDays[2]]: false,
       };
       tasks.push(newTask);
       localStorage.setItem("tasks", JSON.stringify(tasks));
-      renderTasks();
+    	renderTasks();
       taskInput.value = "";
       resetVariables();
     }
@@ -90,7 +93,9 @@ function renderTasks() {
     let oneCell = row.insertCell();
     let twoCell = row.insertCell();
     let deleteCell = row.insertCell();
+	taskCell.setAttribute("class", "taskNames");
     taskCell.innerHTML = tasks[i].task;
+	taskCell.style.color = tasks[i].color;
     doneCell.innerHTML =
       "<input type='checkbox' class='task-done-today' data-index='" +
       i +
@@ -110,7 +115,7 @@ function renderTasks() {
       (tasks[i][closestThreeDays[2]] ? " checked" : "") +
       ">";
     deleteCell.innerHTML =
-      "<button class='delete-button' data-index='" + i + "'>Delete</button>";
+      "<img src='./images/delete.png' alt='' class='delete-button' data-index='" + i + "'/>";
   }
 }
 
@@ -132,7 +137,7 @@ document.addEventListener("change", function (event) {
   }
 });
 
-// event listener for task done checkbox click - 1 day ago
+// event listener for task done checkbox click - 2 day ago
 document.addEventListener("change", function (event) {
   if (event.target.matches(".task-done-2day")) {
     let index = event.target.dataset.index;

@@ -4,26 +4,36 @@
     <meta charset="UTF-8" />
     <title>Daily Habits Tracker</title>
     <link rel="stylesheet" href="./index.css" />
+    <link rel="stylesheet" href="./common.css" />
+    <link rel="stylesheet" href="./normalize.css" />
   </head>
   <body>
-    <h1>Daily Habits Tracker</h1>
-    <button onclick="openPopup()">Click me!</button>
+	<!-- title -->
+    <h1 id="title">Daily Habits Tracker</h1>
+	<!-- add task button -->
+	<div id="openPopupContainer">
+		<img src="./images/plus.png" alt="" onclick="openPopup()" id="openPopupButton">
+	</div>
+	<!-- popup -->
     <div id="popup">
       <div id="popup-content">
-        <h2>Enter some text:</h2>
+        <h2 id="newTaskTitle">New Task:</h2>
 		<form id="add-task-form">
 			<label for="task-input">Task:</label>
 			<input type="text" id="task-input" name="task-input" required />
-			<input type="submit" value="Add" />
+			<label for="color-input">Color:</label>
+			<input type="color" id="color-input" name="color-input">
+			<input type="submit" id="addTaskButton" value="Add" />
 		  </form>
-		<img src="./images/whiteCross.png" alt="" onclick="closePopup()" id="closePopup">
+		<img src="./images/cross.png" alt="" onclick="closePopup()" id="closePopupButton">
       </div>
     </div>
 
+	<!-- table displaying tasks -->
     <table id="tasks-table">
       <thead>
         <tr>
-          <th>Task</th>
+          <th id="taskTitles">Task</th>
           <th id="zeroDayAgo">Done</th>
           <th id="oneDayAgo">1 Day Ago</th>
           <th id="twoDayAgo">2 Days Ago</th>
