@@ -1,31 +1,40 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="UTF-8">
-	<title>Daily Habits Tracker</title>
-	<link rel="stylesheet" href="./index.css">
-</head>
-<body>
-	<h1>Daily Habits Tracker</h1>
-	<form id="add-task-form">
-		<label for="task-input">Task:</label>
-		<input type="text" id="task-input" name="task-input" required>
-		<input type="submit" value="Add">
-	</form>
-	<table id="tasks-table">
-		<thead>
-			<tr>
-				<th>Task</th>
-				<th id="today">Done</th>
-				<th id="oneDayAgo">1 Day Ago</th>
-				<th id="twoDayAgo">2 Days Ago</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			<!-- tasks will be added dynamically using JavaScript -->
-		</tbody>
-	</table>
-	<script src="./index.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Daily Habits Tracker</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <h1>Daily Habits Tracker</h1>
+    <button onclick="openPopup()">Click me!</button>
+    <div id="popup">
+      <div id="popup-content">
+        <h2>Enter some text:</h2>
+		<form id="add-task-form">
+			<label for="task-input">Task:</label>
+			<input type="text" id="task-input" name="task-input" required />
+			<input type="submit" value="Add" />
+		  </form>
+		<img src="./images/whiteCross.png" alt="" onclick="closePopup()" id="closePopup">
+      </div>
+    </div>
+
+    <table id="tasks-table">
+      <thead>
+        <tr>
+          <th>Task</th>
+          <th id="zeroDayAgo">Done</th>
+          <th id="oneDayAgo">1 Day Ago</th>
+          <th id="twoDayAgo">2 Days Ago</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- tasks will be added dynamically using JavaScript -->
+      </tbody>
+    </table>
+    <script src="./index.js"></script>
+    <script src="./popup.js"></script>
+  </body>
 </html>
