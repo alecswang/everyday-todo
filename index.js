@@ -7,6 +7,11 @@ import {
   onValue,
   update,
 } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-database.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/9.18.0/firebase-auth.js";
 
 // Web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -24,6 +29,32 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+const auth = getAuth(app);
+
+let uID = null;
+onAuthStateChanged(auth, (user) => {
+  if (user != null) {
+    console.log("log in");
+    console.log(user.uid);
+    uID = user.uid;
+  } else {
+    console.log("no user");
+  }
+});
+
+// event listener for add task form submit
+document
+  .querySelector("#sign-out-button")
+  .addEventListener("click", function (event) {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        console.log("signed out");
+      })
+      .catch((error) => {
+        // An error happened.
+      });
+  });
 
 //writeData
 // writeUserData(0, "Lanan", []);
@@ -53,7 +84,8 @@ let tasks = [];
 //   tasks = JSON.parse(localStorage.getItem("tasks"));
 // }
 // check if tasks are stored in firebase
-const currentTasks = ref(database, "tasks");
+const currentTasks = ref(database, [uID] + "/tasks");
+console.log(":Dsadasdasdsa = " + uID);
 if (currentTasks) {
   onValue(currentTasks, (snapshot) => {
     tasks = snapshot.val();
@@ -167,12 +199,9 @@ function renderTasks() {
   tableBody.innerHTML = "";
   console.log("renderTasks:" + tasks);
   console.log(Object.keys(tasks).length);
-  // for (const task of Object.keys(tasks)) {
-  //   console.log(task);
-  // }
-  Object.keys(tasks).forEach((key, index) => {
-    console.log(`${key}: ${tasks[key]}`);
-  });
+  // Object.keys(tasks).forEach((key, index) => {
+  //   console.log(`${key}: ${tasks[key]}`);
+  // });
   for (let i = 0; i < Object.keys(tasks).length; i++) {
     console.log("building");
     let row = tableBody.insertRow();
