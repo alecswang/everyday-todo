@@ -51,7 +51,7 @@ document
         // Signed in
         const user = userCredential.user;
         console.log(user.uid);
-        // window.location.replace("./index.html");
+        window.location.replace("./index.html");
         // ...
       })
       .catch((error) => {

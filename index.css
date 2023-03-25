@@ -73,7 +73,50 @@ input[type="checkbox"] {
   /* background-color: #8dc4ff; */
 }
 
-#popup {
+#login {
+  color: white;
+  display: block;
+  margin: 0.7vw auto;
+  padding: 0.7vw;
+  cursor: pointer;
+  width: 20vw;
+  border-radius: 1vw;
+}
+
+#login:hover {
+  background-color: #57b1ff;
+}
+
+#register {
+  color: white;
+  display: block;
+  margin: 0.7vw auto;
+  padding: 0.7vw;
+  cursor: pointer;
+  width: 20vw;
+  border-radius: 1vw;
+}
+
+#register:hover {
+  background-color: #57b1ff;
+}
+
+#sign-out-button {
+  color: white;
+  display: block;
+  margin: 0.7vw auto;
+  padding: 0.7vw;
+  cursor: pointer;
+  width: 20vw;
+  border-radius: 1vw;
+}
+
+#sign-out-button:hover {
+  background-color: rgb(247, 127, 127);
+}
+
+#taskPopup,
+#profilePopup {
   display: none;
   position: fixed;
   top: 0;
@@ -83,7 +126,8 @@ input[type="checkbox"] {
   z-index: 1;
 }
 
-#popup-content {
+#task-popup-content,
+#profile-popup-content {
   background-color: rgba(11, 11, 11, 1);
   width: 50%;
   border-radius: 1vw;
@@ -93,6 +137,9 @@ input[type="checkbox"] {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
+}
+#profile-popup-content {
+  width: 35%;
 }
 
 #closePopupButton {
@@ -107,7 +154,19 @@ input[type="checkbox"] {
   margin: 3vw auto 0;
 }
 
-#openPopupContainer {
+#profileOpenPopupContainer {
+  width: 3vw;
+  height: 3vw;
+  position: absolute;
+  top: 8%;
+  left: 5%;
+  border-radius: 0.5vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#taskOpenPopupContainer {
   width: 3vw;
   height: 3vw;
   position: absolute;
@@ -119,9 +178,13 @@ input[type="checkbox"] {
   align-items: center;
 }
 
-#openPopupButton {
+#profileOpenPopupButton {
+  width: 2.5vw;
+  /* filter: brightness(100%) sepia(20%) saturate(80%) hue-rotate(150deg); */
+}
+#taskOpenPopupButton {
   width: 2vw;
-  /* filter: brightness(100%) sepia60) saturate(30) hue-rotate(190deg); */
+  /* filter: brightness(100%) sepia(60) saturate(30) hue-rotate(190deg); */
   /* filter: none | blur() | brightness() | contrast() | drop-shadow() | grayscale() | hue-rotate() | invert() | opacity() | saturate() | sepia() | url() | initial | inherit; */
 }
 

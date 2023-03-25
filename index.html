@@ -16,21 +16,43 @@
   <body>
     <!-- title -->
     <h1 id="title">Daily Habits Tracker</h1>
+
+    <!-- profile button -->
+    <div id="profileOpenPopupContainer">
+      <img
+        src="./images/profile.png"
+        alt=""
+        onclick="openProfilePopup()"
+        id="profileOpenPopupButton"
+      />
+    </div>
+    <!-- profile popup -->
+    <div id="profilePopup">
+      <div id="profile-popup-content">
+        <a href="./login.html" id="login">Login</a>
+        <a href="./register.html" id="register">Register</a>
+        <p id="sign-out-button">Sign out</p>
+        <img
+          src="./images/cross.png"
+          alt=""
+          onclick="closeProfilePopup()"
+          id="closePopupButton"
+        />
+      </div>
+    </div>
+
     <!-- add task button -->
-    <div id="openPopupContainer">
+    <div id="taskOpenPopupContainer">
       <img
         src="./images/plus.png"
         alt=""
-        onclick="openPopup()"
-        id="openPopupButton"
+        onclick="openTaskPopup()"
+        id="taskOpenPopupButton"
       />
     </div>
-    <a href="./login.html">Login</a>
-    <a href="./register.html">Register</a>
-    <button id="sign-out-button">Sign out</button>
-    <!-- popup -->
-    <div id="popup">
-      <div id="popup-content">
+    <!-- add task popup -->
+    <div id="taskPopup">
+      <div id="task-popup-content">
         <h2 id="newTaskTitle">New Task:</h2>
         <form id="add-task-form">
           <label for="task-input">Task:</label>
@@ -43,7 +65,7 @@
         <img
           src="./images/cross.png"
           alt=""
-          onclick="closePopup()"
+          onclick="closeTaskPopup()"
           id="closePopupButton"
         />
       </div>
