@@ -69,6 +69,10 @@ document
 // hi();
 function hi() {
   //important variables
+  //for dragging track
+  let currentInd = -1;
+  let initialInd = -1;
+  //for dates
   let fullDate = new Date(Date.now());
   let pstDate = fullDate.toLocaleString("en-US", {
     timeZone: "America/Los_Angeles",
@@ -98,7 +102,9 @@ function hi() {
       // Convert tasks object to tasksMap
       tasksMap = new Map(Object.entries(tasks));
       // Sort tasksMap based on index
-      tasksMap = new Map([...tasksMap.entries()].sort((a, b) => a[1].index - b[1].index));
+      tasksMap = new Map(
+        [...tasksMap.entries()].sort((a, b) => a[1].index - b[1].index)
+      );
       console.log(tasksMap);
       // Convert tasksMap back to object
       tasks = Object.fromEntries(tasksMap);
@@ -118,6 +124,8 @@ function hi() {
     year = pstDate.getFullYear();
     month = pstDate.getMonth() + 1;
     day = pstDate.getDate();
+    currentInd = -1;
+    initialInd = -1;
   }
 
   //function to get yesterday date
@@ -217,8 +225,8 @@ function hi() {
       // });
 
       // let taskOrder = [];
-      console.log("render")
-      console.log(tasks)
+      console.log("render");
+      console.log(tasks);
       for (let i = 0; i < Object.keys(tasks).length; i++) {
         console.log("building");
 
@@ -272,12 +280,7 @@ function hi() {
           i +
           "'/>";
         const updates = {};
-        updates[
-          [uID] +
-            "/tasks/" +
-            Object.keys(tasks)[i] +
-            "/index"
-        ] = i;
+        updates[[uID] + "/tasks/" + Object.keys(tasks)[i] + "/index"] = i;
         update(ref(database), updates);
       }
     }
@@ -352,7 +355,7 @@ function hi() {
       // localStorage.setItem("tasks", JSON.stringify(tasks));
       //update firebase
       const updates = {};
-      updates[[uID] +"/tasks/" + Object.keys(tasks)[index]] = null;
+      updates[[uID] + "/tasks/" + Object.keys(tasks)[index]] = null;
       update(ref(database), updates);
       renderTasks();
     }
@@ -465,56 +468,80 @@ function hi() {
   }
   //for drag and reordering rows
   var row;
-  
+
   function dragstart(event) {
     row = event.target;
   }
+
   //need fix - only work for first column
   function dragover(event) {
     var e = event;
     e.preventDefault();
-  
+
     let children = Array.from(e.target.parentNode.parentNode.children);
-  
+
     if (children.indexOf(e.target.parentNode) > children.indexOf(row))
       e.target.parentNode.after(row);
     else e.target.parentNode.before(row);
 
-    console.log(children.indexOf(e.target.parentNode));
-    console.log(e.target.parentNode.parentNode)
-    console.log(children);
-    console.log(e.target.parentNode);
-    console.log(e.target);
-    console.log(row);
+    currentInd = children.indexOf(e.target.parentNode);
+    // console.log(children.indexOf(e.target.parentNode));
+    // console.log(e.target.parentNode.parentNode)
+    // console.log(children);
+    // console.log(e.target.parentNode);
+    // console.log(e.target);
+    // console.log(row);
+    if (initialInd == -1) {
+      initialInd =
+        e.target.parentNode.children[1].children[0].getAttribute("data-index");
+    }
   }
 
   function dragend(event) {
     var e = event;
     e.preventDefault();
-  
+
     let children = Array.from(e.target.parentNode.parentNode.children);
     children = children.slice(1); // remove the parent node from the children array
 
-    console.log(children.indexOf(row));
-    console.log(children);
-    console.log(row.parentNode);
-    console.log(row);
-    // checkOrder(children.indexOf(e.target.parentNode), e.target.parentNode.children[1].children[0].getAttribute('data-index'));
+    // console.log(children.indexOf(row));
+    // console.log(children);
+    // console.log(row.parentNode);
+    // console.log(row);
+    // console.log(afterInd)
+    checkOrder(initialInd, currentInd);
+    resetVariables();
+    console.log(initialInd, currentInd)
   }
   //need code
-  function checkOrder(currentInd, beforeInd) {
-    let taskArr = Array.from(tasksMap.values());
-    if (currentInd > beforeInd) {
-      for (let i = beforeInd + 1; i <= currentInd; i++) {
-        taskArr[i].index--;
+  function checkOrder(initialInd, currentInd) {
+    let taskArr = Array.from(tasksMap, ([key, value]) => ({ key, ...value }));
+    console.log(initialInd + "->" + currentInd);
+    if (currentInd > initialInd) {
+      console.log("inc");
+      for (let i = parseInt(initialInd) + 1; i <= currentInd; i++) {
+        console.log(taskArr[i].index--);
       }
-      taskArr[beforeInd].index = currentInd;
-    } else if (currentInd < beforeInd) {
-      for (let i = currentInd; i < beforeInd; i++) {
-        taskArr[i].index++;
+      taskArr[initialInd].index = currentInd;
+    } else if (currentInd < initialInd) {
+      console.log("dec");
+      for (let i = currentInd; i < initialInd; i++) {
+        console.log(taskArr[i].index++);
       }
-      taskArr[beforeInd].index = currentInd;
+      taskArr[initialInd].index = currentInd;
     }
-    console.log(taskArr)
+    //setting the arrar to tasks
+    for (let i = 0; i < taskArr.length; i++) {
+      const item = taskArr[i];
+      const title = item.key;
+      Object.keys(item).forEach(props => {
+        tasks[title][props] = item[props];
+      });
+      
+    }
+    //update tasks
+    const updates = {};
+    updates[[uID] + "/tasks"] = tasks;
+    update(ref(database), updates);
   }
 }
