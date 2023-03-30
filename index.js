@@ -247,8 +247,11 @@ function hi() {
         let twoCell = row.insertCell();
         let deleteCell = row.insertCell();
 
+        deleteCell.setAttribute("draggable", false);
+
         //filling cells with data
         taskCell.setAttribute("class", "taskNames");
+        // taskCell.setAttribute("draggable", true);
         taskCell.innerHTML = Object.keys(tasks)[i];
         taskCell.style.color = "#" + tasks[Object.keys(tasks)[i]].color;
         doneCell.innerHTML =
@@ -276,7 +279,7 @@ function hi() {
             : "") +
           ">";
         deleteCell.innerHTML =
-          "<img src='./images/delete.png' alt='' class='delete-button' data-index='" +
+          "<img src='./images/delete.png' alt='' class='delete-button' draggable=false data-index='" +
           i +
           "'/>";
         const updates = {};
@@ -470,50 +473,73 @@ function hi() {
   var row;
 
   function dragstart(event) {
-    row = event.target;
+    var e = event;
+    // console.log( e.target.closest('tr').querySelector('.taskNames'))
+    // console.log( e.target)
+    // if (e.target.tagName.toLowerCase() !== "td" || e.target.cellIndex !== 0) {
+    //   e.preventDefault();
+    //   return false;
+    // }
+    row = e.target;
+    console.log(event.target.cells)
   }
 
   //need fix - only work for first column
   function dragover(event) {
-    var e = event;
-    e.preventDefault();
-
-    let children = Array.from(e.target.parentNode.parentNode.children);
-
-    if (children.indexOf(e.target.parentNode) > children.indexOf(row))
-      e.target.parentNode.after(row);
-    else e.target.parentNode.before(row);
-
-    currentInd = children.indexOf(e.target.parentNode);
-    // console.log(children.indexOf(e.target.parentNode));
-    // console.log(e.target.parentNode.parentNode)
-    // console.log(children);
-    // console.log(e.target.parentNode);
-    // console.log(e.target);
-    // console.log(row);
-    if (initialInd == -1) {
-      initialInd =
-        e.target.parentNode.children[1].children[0].getAttribute("data-index");
+    try{
+      var e = event;
+      e.preventDefault();
+  
+      let children = Array.from(e.target.parentNode.parentNode.children);
+  
+      // console.log("这里")
+      // console.log(children)
+      // console.log(row.children[0])
+      // console.log(e.target.parentNode)
+      if (children.indexOf(e.target.parentNode) > children.indexOf(row))
+        e.target.parentNode.after(row);
+      else e.target.parentNode.before(row);
+  
+      currentInd = children.indexOf(e.target.parentNode);
+      // console.log(children.indexOf(e.target.parentNode));
+      // console.log(e.target.parentNode.parentNode)
+      // console.log(children);
+      // console.log(e.target.parentNode);
+      // console.log(e.target);
+      // console.log(row);
+      if (initialInd == -1) {
+        initialInd =
+          e.target.parentNode.children[1].children[0].getAttribute("data-index");
+      }
+    }catch(e){
+      console.log(e)
     }
   }
 
   function dragend(event) {
-    var e = event;
-    e.preventDefault();
+    try{
 
-    let children = Array.from(e.target.parentNode.parentNode.children);
-    children = children.slice(1); // remove the parent node from the children array
-
-    // console.log(children.indexOf(row));
-    // console.log(children);
-    // console.log(row.parentNode);
-    // console.log(row);
-    // console.log(afterInd)
-    checkOrder(initialInd, currentInd);
-    resetVariables();
-    console.log(initialInd, currentInd)
+      var e = event;
+      e.preventDefault();
+  
+      let children = Array.from(e.target.parentNode.parentNode.children);
+      children = children.slice(1); // remove the parent node from the children array
+  
+      // console.log(children.indexOf(row));
+      // console.log(children);
+      // console.log(row.parentNode);
+      // console.log(row);
+      // console.log(afterInd)
+      checkOrder(initialInd, currentInd);
+      resetVariables();
+      console.log(initialInd, currentInd)
+      renderTasks();
+    }catch(e){
+      console.log(e)
+      return;
+    }
   }
-  //need code
+  
   function checkOrder(initialInd, currentInd) {
     let taskArr = Array.from(tasksMap, ([key, value]) => ({ key, ...value }));
     console.log(initialInd + "->" + currentInd);
