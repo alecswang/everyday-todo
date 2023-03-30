@@ -207,6 +207,11 @@ function hi() {
       for (let i = 0; i < Object.keys(tasks).length; i++) {
         console.log("building");
         let row = tableBody.insertRow();
+        row.setAttribute("draggable", true);
+        // row.setAttribute("ondragstart", dragstart());
+        // row.setAttribute("ondragover", dragover());
+        row.addEventListener('dragstart', (ev) => dragstart(ev));
+        row.addEventListener('dragover', (ev) => dragover(ev));
         let taskCell = row.insertCell();
         let doneCell = row.insertCell();
         let oneCell = row.insertCell();
@@ -427,4 +432,21 @@ function hi() {
     update(ref(database), updates);
     renderTasks();
   }
+}
+
+var row;
+
+function dragstart(event){  
+  row = event.target; 
+}
+function dragover(event){
+  var e = event;
+  e.preventDefault(); 
+  
+  let children= Array.from(e.target.parentNode.parentNode.children);
+  
+  if(children.indexOf(e.target.parentNode)>children.indexOf(row))
+    e.target.parentNode.after(row);
+  else
+    e.target.parentNode.before(row);
 }
