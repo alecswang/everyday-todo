@@ -88,11 +88,22 @@ function hi() {
   // }
   // check if tasks are stored in firebase
   const currentTasks = ref(database, [uID] + "/tasks");
+
+  //for sorting
+  let tasksMap = new Map();
+
   if (currentTasks) {
     onValue(currentTasks, (snapshot) => {
       tasks = snapshot.val();
+      // Convert tasks object to tasksMap
+      tasksMap = new Map(Object.entries(tasks));
+      // Sort tasksMap based on index
+      tasksMap = new Map([...tasksMap.entries()].sort((a, b) => a[1].index - b[1].index));
+      console.log(tasksMap);
+      // Convert tasksMap back to object
+      tasks = Object.fromEntries(tasksMap);
       console.log(tasks);
-      //whyyyyy?
+      //whyyyy???
       renderTasks();
     });
   }
@@ -204,19 +215,31 @@ function hi() {
       // Object.keys(tasks).forEach((key, index) => {
       //   console.log(`${key}: ${tasks[key]}`);
       // });
+
+      // let taskOrder = [];
+      console.log("render")
+      console.log(tasks)
       for (let i = 0; i < Object.keys(tasks).length; i++) {
         console.log("building");
+
+        // Add the task name to the task order array
+        // taskOrder.push(Object.keys(tasks)[i]);
+
+        //creating rows
         let row = tableBody.insertRow();
         row.setAttribute("draggable", true);
-        // row.setAttribute("ondragstart", dragstart());
-        // row.setAttribute("ondragover", dragover());
-        row.addEventListener('dragstart', (ev) => dragstart(ev));
-        row.addEventListener('dragover', (ev) => dragover(ev));
+        row.addEventListener("dragstart", (ev) => dragstart(ev));
+        row.addEventListener("dragover", (ev) => dragover(ev));
+        row.addEventListener("dragend", (ev) => dragend(ev));
+
+        //filling the row with cells
         let taskCell = row.insertCell();
         let doneCell = row.insertCell();
         let oneCell = row.insertCell();
         let twoCell = row.insertCell();
         let deleteCell = row.insertCell();
+
+        //filling cells with data
         taskCell.setAttribute("class", "taskNames");
         taskCell.innerHTML = Object.keys(tasks)[i];
         taskCell.style.color = "#" + tasks[Object.keys(tasks)[i]].color;
@@ -248,6 +271,14 @@ function hi() {
           "<img src='./images/delete.png' alt='' class='delete-button' data-index='" +
           i +
           "'/>";
+        const updates = {};
+        updates[
+          [uID] +
+            "/tasks/" +
+            Object.keys(tasks)[i] +
+            "/index"
+        ] = i;
+        update(ref(database), updates);
       }
     }
   }
@@ -321,8 +352,8 @@ function hi() {
       // localStorage.setItem("tasks", JSON.stringify(tasks));
       //update firebase
       const updates = {};
-      updates["tasks/" + Object.keys(tasks)[index]] = null;
-      return update(ref(database), updates);
+      updates[[uID] +"/tasks/" + Object.keys(tasks)[index]] = null;
+      update(ref(database), updates);
       renderTasks();
     }
   });
@@ -432,21 +463,58 @@ function hi() {
     update(ref(database), updates);
     renderTasks();
   }
-}
-
-var row;
-
-function dragstart(event){  
-  row = event.target; 
-}
-function dragover(event){
-  var e = event;
-  e.preventDefault(); 
+  //for drag and reordering rows
+  var row;
   
-  let children= Array.from(e.target.parentNode.parentNode.children);
+  function dragstart(event) {
+    row = event.target;
+  }
+  //need fix - only work for first column
+  function dragover(event) {
+    var e = event;
+    e.preventDefault();
   
-  if(children.indexOf(e.target.parentNode)>children.indexOf(row))
-    e.target.parentNode.after(row);
-  else
-    e.target.parentNode.before(row);
+    let children = Array.from(e.target.parentNode.parentNode.children);
+  
+    if (children.indexOf(e.target.parentNode) > children.indexOf(row))
+      e.target.parentNode.after(row);
+    else e.target.parentNode.before(row);
+
+    console.log(children.indexOf(e.target.parentNode));
+    console.log(e.target.parentNode.parentNode)
+    console.log(children);
+    console.log(e.target.parentNode);
+    console.log(e.target);
+    console.log(row);
+  }
+
+  function dragend(event) {
+    var e = event;
+    e.preventDefault();
+  
+    let children = Array.from(e.target.parentNode.parentNode.children);
+    children = children.slice(1); // remove the parent node from the children array
+
+    console.log(children.indexOf(row));
+    console.log(children);
+    console.log(row.parentNode);
+    console.log(row);
+    // checkOrder(children.indexOf(e.target.parentNode), e.target.parentNode.children[1].children[0].getAttribute('data-index'));
+  }
+  //need code
+  function checkOrder(currentInd, beforeInd) {
+    let taskArr = Array.from(tasksMap.values());
+    if (currentInd > beforeInd) {
+      for (let i = beforeInd + 1; i <= currentInd; i++) {
+        taskArr[i].index--;
+      }
+      taskArr[beforeInd].index = currentInd;
+    } else if (currentInd < beforeInd) {
+      for (let i = currentInd; i < beforeInd; i++) {
+        taskArr[i].index++;
+      }
+      taskArr[beforeInd].index = currentInd;
+    }
+    console.log(taskArr)
+  }
 }
